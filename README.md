@@ -2,6 +2,12 @@
 
 A sophisticated **Graph Retrieval-Augmented Generation (GraphRAG)** system for analyzing securities purchase agreements, license agreements, and other financial contracts. Features a modern web interface with real-time processing updates and conversational AI for intelligent contract analysis.
 
+## 🌐 **Live Demo**
+
+**Try it now:** [https://cont-rag.vercel.app](https://cont-rag.vercel.app)
+
+*No setup required! Just get a free [Google Gemini API key](https://makersuite.google.com/app/apikey) and start analyzing contracts.*
+
 **✨ NEW: Web Interface with API Key Support for Easy Hosting**
 
 ## 🌐 **Web Interface Features**

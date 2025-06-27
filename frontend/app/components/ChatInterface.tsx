@@ -22,22 +22,10 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    // Only scroll within the chat container, not the entire page
-    // Also make it less aggressive - only scroll if user is near the bottom
-    if (messagesContainerRef.current && messagesEndRef.current) {
-      const container = messagesContainerRef.current
-      const isNearBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 100
-      
-      // Only auto-scroll if user is already near the bottom or if this is the first message
-      if (isNearBottom || messages.length <= 1) {
-        messagesEndRef.current.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'nearest' // Don't scroll the page, just within the container
-        })
-      }
-    }
-  }, [messages])
+  // Remove automatic scrolling - let user control scroll position
+  // useEffect(() => {
+  //   // Disabled automatic scrolling to prevent unwanted scroll behavior
+  // }, [messages])
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading) return
