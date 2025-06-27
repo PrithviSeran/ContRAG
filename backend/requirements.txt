@@ -1,7 +1,21 @@
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-python-multipart>=0.0.6
-websockets>=12.0
+fastapi==0.115.14
+uvicorn[standard]==0.25.0
+python-multipart==0.0.6
+websockets==12.0
+pydantic==2.7.1
+langchain==0.2.12
+langchain-google-genai==1.0.6
+langchain-neo4j==0.0.5
+neo4j==5.20.0
+python-dotenv==1.0.0
+httpx==0.28.1
+aiofiles==23.2.0
+Pillow==10.3.0
+beautifulsoup4==4.13.4
+lxml==5.2.2
+pandas==2.2.2
+numpy==1.26.4
+requests==2.32.3
 
 # Include existing requirements
 -r ../requirements.txt 
