@@ -47,7 +47,9 @@ export default function Home() {
   // WebSocket connection for real-time updates
   useEffect(() => {
     const connectWebSocket = () => {
-      const websocket = new WebSocket('ws://localhost:8000/ws')
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+      const wsUrl = apiBaseUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/ws'
+      const websocket = new WebSocket(wsUrl)
       
       websocket.onopen = () => {
         console.log('WebSocket connected')
