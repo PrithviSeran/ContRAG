@@ -1,5 +1,6 @@
 fastapi==0.115.14
 uvicorn[standard]==0.25.0
+gunicorn==21.2.0
 python-multipart==0.0.6
 websockets==12.0
 pydantic==2.7.1
@@ -16,6 +17,3 @@ lxml==5.2.2
 pandas==2.2.2
 numpy==1.26.4
 requests==2.32.3
-
-# Include existing requirements
--r ../requirements.txt 
