@@ -32,15 +32,30 @@ def main():
         '--access-log'
     ]
     
+    print("=" * 60)
+    print("RAILWAY DEPLOYMENT DEBUG INFO")
+    print("=" * 60)
     print(f"Starting TEST server on {host}:{port}")
     print(f"Command: {' '.join(cmd)}")
     print(f"Working directory: {os.getcwd()}")
-    print(f"Python path: {sys.path}")
+    print(f"Python executable: {sys.executable}")
+    print(f"Python version: {sys.version}")
+    print(f"Environment PORT: {os.environ.get('PORT', 'NOT_SET')}")
+    print(f"Environment variables:")
+    for key, value in os.environ.items():
+        if 'PORT' in key or 'HOST' in key or 'RAILWAY' in key:
+            print(f"  {key}={value}")
+    print(f"Files in current directory:")
+    for file in os.listdir('.'):
+        print(f"  {file}")
+    print("=" * 60)
     
     try:
+        print("Starting uvicorn process...")
         subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Server failed to start: {e}")
+        print(f"Server failed to start with exit code {e.returncode}")
+        print(f"Error: {e}")
         sys.exit(1)
     except KeyboardInterrupt:
         print("\nShutting down server...")

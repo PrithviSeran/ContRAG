@@ -27,9 +27,9 @@ RUN mkdir -p uploads
 # Expose port (Railway will set PORT env var)
 EXPOSE 8000
 
-# Health check - use PORT env var if available
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
+# Health check disabled for Railway debugging
+# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+#     CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
 
-# Run the test application for debugging
-CMD ["python", "test_start.py"] 
+# Use ultra-simple HTTP server for Railway testing
+CMD ["python", "simple_test.py"] 
