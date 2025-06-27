@@ -3,11 +3,11 @@ uvicorn[standard]==0.25.0
 gunicorn==21.2.0
 python-multipart==0.0.6
 websockets==12.0
-pydantic==2.7.1
-langchain==0.2.12
-langchain-google-genai==1.0.6
-langchain-neo4j==0.0.5
-neo4j==5.20.0
+pydantic==2.9.0
+langchain==0.3.7
+langchain-google-genai==2.1.5
+langchain-neo4j==0.4.0
+neo4j==5.25.0
 python-dotenv==1.0.0
 httpx==0.28.1
 aiofiles==23.2.0
