@@ -347,6 +347,32 @@ class Neo4jPersistence:
         self.driver.close()
 
 
+# Wrapper functions for backward compatibility
+def backup_neo4j_data(backup_name: str = None) -> str:
+    """Backup Neo4j data to a file"""
+    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    user = os.getenv("NEO4J_USER", "neo4j")
+    password = os.getenv("NEO4J_PASSWORD", "password")
+    
+    persistence = Neo4jPersistence(uri, user, password)
+    try:
+        return persistence.export_database(backup_name)
+    finally:
+        persistence.close()
+
+def restore_neo4j_data(backup_path: str, clear_existing: bool = True) -> bool:
+    """Restore Neo4j data from a backup file"""
+    uri = os.getenv("NEO4J_URI", "bolt://localhost:7687")
+    user = os.getenv("NEO4J_USER", "neo4j")
+    password = os.getenv("NEO4J_PASSWORD", "password")
+    
+    persistence = Neo4jPersistence(uri, user, password)
+    try:
+        return persistence.import_database(backup_path, clear_existing)
+    finally:
+        persistence.close()
+
+
 def main():
     """Example usage of the Neo4j persistence utility."""
     import os

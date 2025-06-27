@@ -1,0 +1,102 @@
+{
+  "backend/uploads/feb2c525-3b3b-4b6b-8f3c-5254c28d65c5_10.1.html": {
+    "contract_id": "Securities Purchase Agreement (Unknown-Unknown-feb2c525-3)",
+    "title": "Securities Purchase Agreement (Unknown-Unknown-feb2c525-3)",
+    "contract_type": "License Agreement",
+    "summary": "Exclusive License Agreement between Abeona Therapeutics Inc. (licensor) and Purchasers (licensee) executed on 2023-07-03.",
+    "execution_date": "2023-07-03",
+    "total_offering_amount": null,
+    "parties_count": 2,
+    "securities_count": 2,
+    "conditions_count": 1,
+    "metadata": {
+      "file_path": "backend/uploads/feb2c525-3b3b-4b6b-8f3c-5254c28d65c5_10.1.html",
+      "year": "Unknown",
+      "filing_type": "Unknown",
+      "accession": "feb2c525-3b3b-4b6b-8f3c-5254c28d65c5_10.1.html",
+      "exhibit": "Unknown"
+    },
+    "processed_at": "2025-06-27T11:14:18.424342",
+    "mtime": 1751036930.118329
+  },
+  "backend/uploads/6e54cfd9-e187-4c52-8b95-35b4eb9fe7af_10.1.html": {
+    "contract_id": "Securities Purchase Agreement (Unknown-Unknown-6e54cfd9-e)",
+    "title": "Securities Purchase Agreement (Unknown-Unknown-6e54cfd9-e)",
+    "contract_type": "License Agreement",
+    "summary": "Exclusive License Agreement between Abeona Therapeutics Inc. (licensor) and Purchasers (licensee) executed on 2023-07-03.",
+    "execution_date": "2023-07-03",
+    "total_offering_amount": null,
+    "parties_count": 2,
+    "securities_count": 2,
+    "conditions_count": 1,
+    "metadata": {
+      "file_path": "backend/uploads/6e54cfd9-e187-4c52-8b95-35b4eb9fe7af_10.1.html",
+      "year": "Unknown",
+      "filing_type": "Unknown",
+      "accession": "6e54cfd9-e187-4c52-8b95-35b4eb9fe7af_10.1.html",
+      "exhibit": "Unknown"
+    },
+    "processed_at": "2025-06-27T11:14:20.405217",
+    "mtime": 1751037252.0978858
+  },
+  "backend/uploads/1b366876-51c6-4acc-b4a1-ce7ab2a1774f_10.1.html": {
+    "contract_id": "Securities Purchase Agreement (Unknown-Unknown-1b366876-5)",
+    "title": "Securities Purchase Agreement (Unknown-Unknown-1b366876-5)",
+    "contract_type": "License Agreement",
+    "summary": "Exclusive License Agreement between Abeona Therapeutics Inc. (licensor) and Purchasers identified on the signature pages hereto (licensee) executed on 2023-07-03.",
+    "execution_date": "2023-07-03",
+    "total_offering_amount": null,
+    "parties_count": 2,
+    "securities_count": 2,
+    "conditions_count": 1,
+    "metadata": {
+      "file_path": "backend/uploads/1b366876-51c6-4acc-b4a1-ce7ab2a1774f_10.1.html",
+      "year": "Unknown",
+      "filing_type": "Unknown",
+      "accession": "1b366876-51c6-4acc-b4a1-ce7ab2a1774f_10.1.html",
+      "exhibit": "Unknown"
+    },
+    "processed_at": "2025-06-27T11:14:27.927123",
+    "mtime": 1751036796.9232943
+  },
+  "backend/uploads/e8fa8a14-6b5a-49c8-b528-245bd8d209d4_10.1.html": {
+    "contract_id": "Securities Purchase Agreement (Unknown-Unknown-e8fa8a14-6)",
+    "title": "Securities Purchase Agreement (Unknown-Unknown-e8fa8a14-6)",
+    "contract_type": "License Agreement",
+    "summary": "Exclusive License Agreement between Abeona Therapeutics Inc. (licensor) and Purchasers (licensee) executed on 2023-07-03.",
+    "execution_date": "2023-07-03",
+    "total_offering_amount": null,
+    "parties_count": 2,
+    "securities_count": 2,
+    "conditions_count": 1,
+    "metadata": {
+      "file_path": "backend/uploads/e8fa8a14-6b5a-49c8-b528-245bd8d209d4_10.1.html",
+      "year": "Unknown",
+      "filing_type": "Unknown",
+      "accession": "e8fa8a14-6b5a-49c8-b528-245bd8d209d4_10.1.html",
+      "exhibit": "Unknown"
+    },
+    "processed_at": "2025-06-27T11:14:29.857816",
+    "mtime": 1751036676.1187093
+  },
+  "backend/uploads/8d28710d-1d55-42d4-8872-cf1d13fb2e1c_10.1.html": {
+    "contract_id": "Securities Purchase Agreement (Unknown-Unknown-8d28710d-1)",
+    "title": "Securities Purchase Agreement (Unknown-Unknown-8d28710d-1)",
+    "contract_type": "License Agreement",
+    "summary": "Exclusive License Agreement between Abeona Therapeutics Inc. (licensor) and Purchasers identified on the signature pages hereto (licensee) executed on 2023-07-03.",
+    "execution_date": "2023-07-03",
+    "total_offering_amount": null,
+    "parties_count": 2,
+    "securities_count": 2,
+    "conditions_count": 1,
+    "metadata": {
+      "file_path": "backend/uploads/8d28710d-1d55-42d4-8872-cf1d13fb2e1c_10.1.html",
+      "year": "Unknown",
+      "filing_type": "Unknown",
+      "accession": "8d28710d-1d55-42d4-8872-cf1d13fb2e1c_10.1.html",
+      "exhibit": "Unknown"
+    },
+    "processed_at": "2025-06-27T11:14:37.573338",
+    "mtime": 1751037077.3520925
+  }
+}

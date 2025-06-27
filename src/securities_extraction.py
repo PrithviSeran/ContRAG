@@ -10,7 +10,7 @@ from neo4j import GraphDatabase
 import json
 import re
 
-from src.securities_data_models import (
+from securities_data_models import (
     SecuritiesContract, Party, Security, ClosingConditions, 
     RegistrationRights, ResaleRestrictions, Representation,
     SecurityType, PartyRole, RegistrationStatus
@@ -22,7 +22,7 @@ class SecuritiesContractExtractor:
     def __init__(self):
         # Use gemini-1.5-flash which has higher rate limits than gemini-2.0-flash
         self.llm = ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
+            model="gemini-2.0-flash-001",
             temperature=0.1,  # Lower temperature for more consistent extraction
             max_tokens=8192   # Sufficient for most contracts
         )

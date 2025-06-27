@@ -23,6 +23,18 @@ class EnhancedBatchProcessor:
         self.processed_data_cache = {}  # Cache for processed contract data
         self.cache_file = "processed_contracts_cache.json"
         
+        # Initialize pipeline immediately to avoid None errors
+        try:
+            print("🔧 Attempting to initialize pipeline...")
+            self.pipeline = SecuritiesGraphRAGPipeline()
+            print("✅ Pipeline initialized in constructor")
+        except Exception as e:
+            print(f"❌ Error: Could not initialize pipeline in constructor: {e}")
+            print(f"   Error type: {type(e).__name__}")
+            import traceback
+            print(f"   Traceback: {traceback.format_exc()}")
+            self.pipeline = None
+        
     def find_all_contract_files(self, base_dir=None) -> List[Tuple[str, str]]:
         """Find all contract files with their types"""
         
@@ -33,28 +45,68 @@ class EnhancedBatchProcessor:
         
         contract_files = []
         
-        # Find HTML files
-        html_pattern = os.path.join(base_dir, "**", "*.html")
-        html_files = glob.glob(html_pattern, recursive=True)
-        for f in html_files:
-            contract_files.append((f, "html"))
+        # Check if this is the uploads directory (for frontend uploads)
+        is_upload_dir = "uploads" in base_dir
         
-        # Find HTM files  
-        htm_pattern = os.path.join(base_dir, "**", "*.htm")
-        htm_files = glob.glob(htm_pattern, recursive=True)
-        for f in htm_files:
-            contract_files.append((f, "htm"))
+        if is_upload_dir:
+            # For uploads directory, search non-recursively to avoid duplicates
+            print("📁 Detected uploads directory - searching non-recursively")
+            for extension in ["*.html", "*.htm", "*.txt"]:
+                pattern = os.path.join(base_dir, extension)
+                files = glob.glob(pattern, recursive=False)
+                file_type = extension[2:]  # Remove "*."
+                for f in files:
+                    if os.path.isfile(f):  # Ensure it's actually a file
+                        contract_files.append((f, file_type))
+        else:
+            # For regular data directories, search recursively
+            print("📂 Searching recursively in data directory")
+            # Find HTML files
+            html_pattern = os.path.join(base_dir, "**", "*.html")
+            html_files = glob.glob(html_pattern, recursive=True)
+            for f in html_files:
+                if os.path.isfile(f):  # Ensure it's actually a file
+                    contract_files.append((f, "html"))
             
-        # Find TXT files
-        txt_pattern = os.path.join(base_dir, "**", "*.txt")
-        txt_files = glob.glob(txt_pattern, recursive=True)
-        for f in txt_files:
-            contract_files.append((f, "txt"))
+            # Find HTM files  
+            htm_pattern = os.path.join(base_dir, "**", "*.htm")
+            htm_files = glob.glob(htm_pattern, recursive=True)
+            for f in htm_files:
+                if os.path.isfile(f):  # Ensure it's actually a file
+                    contract_files.append((f, "htm"))
+                
+            # Find TXT files
+            txt_pattern = os.path.join(base_dir, "**", "*.txt")
+            txt_files = glob.glob(txt_pattern, recursive=True)
+            for f in txt_files:
+                if os.path.isfile(f):  # Ensure it's actually a file
+                    contract_files.append((f, "txt"))
+        
+        # Remove duplicates more thoroughly
+        # Use both file path and file size for deduplication
+        seen = set()
+        unique_files = []
+        for file_path, file_type in contract_files:
+            try:
+                # Create a unique identifier using file path and size
+                file_size = os.path.getsize(file_path)
+                file_identifier = (os.path.basename(file_path), file_size)
+                
+                if file_identifier not in seen:
+                    seen.add(file_identifier)
+                    unique_files.append((file_path, file_type))
+                else:
+                    print(f"⚠️  Skipping duplicate file: {os.path.basename(file_path)}")
+            except OSError as e:
+                print(f"⚠️  Warning: Could not stat file {file_path}: {e}")
+                continue
+        
+        print(f"📋 Found {len(unique_files)} unique contract files")
         
         # Sort by year and type for logical processing order
-        contract_files.sort(key=lambda x: (self._extract_year(x[0]), x[1]))
+        unique_files.sort(key=lambda x: (self._extract_year(x[0]), x[1]))
         
-        return contract_files
+        return unique_files
     
     def load_processed_cache(self) -> bool:
         """Load previously processed contract data from cache"""
@@ -229,6 +281,23 @@ class EnhancedBatchProcessor:
             # Create meaningful contract ID
             contract_id = f"{metadata['year']}-{metadata['exhibit']}-{metadata['accession'][:10]}"
             
+            # Ensure pipeline is initialized
+            if self.pipeline is None:
+                print("🔧 Pipeline not initialized, attempting to initialize now...")
+                try:
+                    self.pipeline = SecuritiesGraphRAGPipeline()
+                    print("✅ Pipeline initialized successfully")
+                except Exception as init_error:
+                    print(f"❌ Failed to initialize pipeline: {init_error}")
+                    print(f"   Error type: {type(init_error).__name__}")
+                    import traceback
+                    print(f"   Traceback: {traceback.format_exc()}")
+                    print("💡 Possible issues:")
+                    print("   - Missing environment variables (GOOGLE_API_KEY, NEO4J_URI, etc.)")
+                    print("   - Neo4j database not running")
+                    print("   - Missing dependencies")
+                    return False
+            
             # Process with pipeline (this uses LLM)
             print("🤖 Processing with AI extraction...")
             contract_data = self.pipeline.ingest_contract(contract_text, contract_id)
@@ -338,11 +407,15 @@ class EnhancedBatchProcessor:
             
             # Progress update every 5 files
             if i % 5 == 0:
-                elapsed = time.time() - self.start_time
-                rate = i / elapsed * 60  # files per minute
-                print(f"\n📈 Progress: {i}/{len(contract_files)} files processed")
-                print(f"⏱️  Rate: {rate:.1f} files/minute")
-                print(f"✅ Success rate: {successful_count/i*100:.1f}%")
+                if self.start_time is not None:
+                    elapsed = time.time() - self.start_time
+                    rate = i / elapsed * 60  # files per minute
+                    print(f"\n📈 Progress: {i}/{len(contract_files)} files processed")
+                    print(f"⏱️  Rate: {rate:.1f} files/minute")
+                    print(f"✅ Success rate: {successful_count/i*100:.1f}%")
+                else:
+                    print(f"\n📈 Progress: {i}/{len(contract_files)} files processed")
+                    print(f"✅ Success rate: {successful_count/i*100:.1f}%")
         
         # Final results
         print(f"\n✅ Contract processing loop completed!")
@@ -365,7 +438,11 @@ class EnhancedBatchProcessor:
     def _generate_final_report(self, total_files: int, successful_count: int) -> Dict:
         """Generate comprehensive final report"""
         
-        elapsed_time = time.time() - self.start_time
+        # Handle case where start_time was never set (API direct calls)
+        if self.start_time is None:
+            elapsed_time = 0  # Default when timing wasn't tracked
+        else:
+            elapsed_time = time.time() - self.start_time
         
         # Get database statistics with timeout protection
         print("\n📊 Retrieving database statistics...")
@@ -389,6 +466,9 @@ class EnhancedBatchProcessor:
             print(f"⚠️  Could not retrieve database stats: {e}")
             db_stats = {"error": f"Could not retrieve stats: {e}"}
         
+        # Calculate rate safely
+        rate = f"{total_files/elapsed_time*60:.1f} files/minute" if elapsed_time > 0 else "N/A"
+        
         report = {
             "summary": {
                 "total_files_found": total_files,
@@ -396,7 +476,7 @@ class EnhancedBatchProcessor:
                 "failed_files": len(self.failed_files),
                 "success_rate": f"{successful_count/total_files*100:.1f}%",
                 "processing_time": f"{elapsed_time:.1f} seconds",
-                "rate": f"{total_files/elapsed_time*60:.1f} files/minute"
+                "rate": rate
             },
             "database_stats": db_stats,
             "processed_files": self.processed_files,
@@ -411,7 +491,7 @@ class EnhancedBatchProcessor:
         print(f"   Failed: {len(self.failed_files)}")
         print(f"   Success Rate: {successful_count/total_files*100:.1f}%")
         print(f"   Processing Time: {elapsed_time:.1f} seconds")
-        print(f"   Rate: {total_files/elapsed_time*60:.1f} files/minute")
+        print(f"   Rate: {rate}")
         
         print(f"\n📈 Database Statistics:")
         if "error" in db_stats:

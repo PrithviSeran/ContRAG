@@ -1,139 +1,165 @@
 # 📜 GraphRAG for Securities Contracts
 
-A sophisticated **Graph Retrieval-Augmented Generation (GraphRAG)** system for analyzing securities purchase agreements, license agreements, and other financial contracts. This system extracts structured data from legal documents and enables intelligent querying through a conversational AI interface.
+A sophisticated **Graph Retrieval-Augmented Generation (GraphRAG)** system for analyzing securities purchase agreements, license agreements, and other financial contracts. Features a modern web interface with real-time processing updates and conversational AI for intelligent contract analysis.
 
-**Currently processing:** 61 Abeona Therapeutics Inc. contracts (1996-2023)
+**✨ NEW: Web Interface with API Key Support for Easy Hosting**
 
-## 🏗️ **Architecture Overview**
+## 🌐 **Web Interface Features**
 
-```
-Contract Files (HTML/TXT) → [Enhanced AI + Rule-Based Extraction] → Structured Data → [Neo4j Import] → Knowledge Graph
-                                                                                                            ↓
-User Query → [AI Agent] → [Securities Contract Tool] → [Cypher Queries] → Intelligent Results
-```
+- **🔑 Dynamic API Key Input** - Users provide their own Gemini API keys
+- **📁 Drag & Drop Upload** - Easy contract file upload with progress tracking
+- **⚡ Real-time Processing** - Live updates via WebSocket connections
+- **💬 AI Chat Interface** - Natural language querying of processed contracts
+- **📊 Contract Summaries** - Visual overview of processed documents
+- **🔄 Session Management** - Clear distinction between current and historical data
+- **🛡️ Secure & Private** - API keys stored locally in browser only
 
-## 🚀 **Quick Start**
+## 🚀 **Quick Start (Web Interface)**
 
-### **Prerequisites**
+### **For Hosted Deployment**
 
-- Python 3.9+
-- Docker & Docker Compose
-- Google AI API Key (for Gemini)
+1. **Clone and Setup**
+   ```bash
+   git clone <repository>
+   cd graphrag
+   ```
 
-### **1. Clone and Setup**
+2. **Backend Setup**
+   ```bash
+   # Install Python dependencies
+   pip install -r requirements.txt
+   
+   # Start Neo4j database
+   cd config && docker-compose up -d
+   
+   # Start backend API
+   cd backend && python api.py
+   ```
+
+3. **Frontend Setup**
+   ```bash
+   # Install Node.js dependencies
+   cd frontend
+   npm install
+   
+   # Start development server
+   npm run dev
+   ```
+
+4. **Access the Interface**
+   - Open `http://localhost:3000`
+   - Enter your Gemini API key (get free key from [Google AI Studio](https://makersuite.google.com/app/apikey))
+   - Upload contracts and start processing!
+
+### **For Local Development**
+
+If you prefer command-line processing with environment variables:
 
 ```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Copy environment template
+# Create .env file
 cp .env.example .env
-```
 
-### **2. Configure Environment**
+# Add your API key
+echo "GOOGLE_API_KEY=your_key_here" >> .env
 
-Edit `.env` file:
-
-```bash
-# Get your API key from: https://makersuite.google.com/app/apikey
-GOOGLE_API_KEY=your_google_ai_api_key_here
-
-# Neo4j settings (default values work with Docker setup)
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=graphrag_password
-```
-
-### **3. Start Neo4j Database**
-
-```bash
-# Using Docker Compose (recommended)
-cd config && docker-compose up -d
-
-# Or using Docker directly
-docker run -d \
-  --name graphrag-neo4j \
-  -p 7474:7474 -p 7687:7687 \
-  -e NEO4J_AUTH=neo4j/graphrag_password \
-  neo4j:latest
-```
-
-### **4. Run the Enhanced Pipeline**
-
-```bash
-# Process all 61 Abeona Therapeutics contracts
+# Run pipeline directly
 python pipeline.py
 ```
 
-## 📊 **What You'll See**
-
-The enhanced pipeline will:
-
-1. **Load Cache** - Skip previously processed contracts (saves LLM calls!)
-2. **Smart Processing** - Use hybrid AI + rule-based extraction 
-3. **Import to Graph** - Build comprehensive knowledge graph
-4. **Interactive Queries** - Natural language contract analysis
-
-**Example Output:**
+## 🔧 **Architecture Overview**
 
 ```
-🚀 STARTING ENHANCED BATCH CONTRACT INGESTION
-================================================================
-
-📁 Loading processed contracts cache...
-💾 Loaded cache with 45 previously processed contracts
-
-🔍 Discovering contract files...
-✅ Found 61 contract files
-
-🏃‍♂️ 45 already processed (will use cache)
-🤖 16 new files (will use LLM processing)
-
-📊 File Distribution:
-   HTML: 24 files
-   TXT: 37 files
-
-================================================================
-PROCESSING CONTRACT 46/61
-File: data/ABEONA-THERAPEUTICS-INC/2022/10-Q/0001493152-22-021969/10.3.html
-Type: HTML
-================================================================
-
-📅 Year: 2022
-📄 Filing Type: 10-Q
-🔢 Accession: 0001493152-22-021969
-📋 Exhibit: 10.3.html
-
-🤖 Processing with AI extraction...
-✅ Successfully processed: License Agreement between Abeona and REGENXBIO
-📊 Contract Type: License Agreement
-💰 Total Amount: 5000000.0
-👥 Parties: 2
-📜 Securities: 0
-✓ Conditions: 8
-
-================================================================
-FINAL RESULTS
-================================================================
-📊 Processed: 61/61 files
-✅ Success Rate: 100%
-📈 Database: 757 nodes, 761 relationships
-⏱️  Processing Time: 125.3 seconds
+Web Interface (Next.js) → FastAPI Backend → [Enhanced AI + Rule-Based Extraction] → Neo4j Graph Database
+                               ↓
+User Upload → Processing Pipeline → Structured Data → Knowledge Graph → AI Chat Interface
 ```
 
-## 🔧 **System Components**
+### **System Components**
 
-### **Core Modules**
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Frontend** | Next.js + TypeScript | Modern web interface with real-time updates |
+| **Backend** | FastAPI + Python | API server with WebSocket support |
+| **Database** | Neo4j | Graph database for contract relationships |
+| **AI Engine** | Google Gemini | Contract extraction and chat functionality |
+| **Processing** | Custom Pipeline | Enhanced AI + rule-based extraction |
 
-| File | Purpose |
-|------|---------|
-| `src/securities_data_models.py` | Pydantic schemas for securities contracts |
-| `src/securities_extraction.py` | Enhanced AI + rule-based extraction |
-| `src/securities_pipeline_runner.py` | Pipeline orchestration |
-| `src/batch_ingest_contracts.py` | Batch processing with caching |
-| `src/neo4j_persistence.py` | Graph database operations |
+## 🔑 **API Key Management**
 
-### **Contract Types Supported**
+### **For Users (Hosted Sites)**
+
+1. **Get Free API Key**: Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+2. **Enter in Interface**: Paste key in the settings panel
+3. **Validation**: System tests key before processing
+4. **Security**: Keys stored locally in browser only
+
+### **For Developers**
+
+```bash
+# Option 1: Environment variable (local development)
+export GOOGLE_API_KEY="your_key_here"
+
+# Option 2: .env file
+echo "GOOGLE_API_KEY=your_key_here" > .env
+
+# Option 3: Header in API requests (web interface)
+curl -H "X-API-Key: your_key_here" http://localhost:8000/process
+```
+
+## 📱 **Web Interface Guide**
+
+### **1. API Key Setup**
+- First-time users see API key input screen
+- Validate key before proceeding
+- Keys saved in browser for future visits
+
+### **2. Contract Upload**
+- Drag & drop HTML/TXT contract files
+- Duplicate detection and prevention
+- Real-time upload progress
+
+### **3. Processing Pipeline**
+- Live status updates with WebSocket
+- Progress tracking per file
+- Detailed logging in sidebar
+
+### **4. AI Chat Interface**
+- Natural language queries
+- Context-aware responses
+- Chat history maintained
+- Smart auto-scrolling
+
+### **5. Contract Summary**
+- Toggle between current session and all contracts
+- Visual overview of processed documents
+- Export capabilities
+
+## 🎯 **API Endpoints**
+
+### **Core Endpoints**
+
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| `POST` | `/validate-api-key` | Test API key validity |
+| `POST` | `/upload` | Upload contract files |
+| `POST` | `/process` | Start contract processing |
+| `POST` | `/chat` | Chat with processed contracts |
+| `GET` | `/contracts/summary` | Get contract summaries |
+| `DELETE` | `/reset` | Clear system state |
+| `WebSocket` | `/ws` | Real-time updates |
+
+### **Authentication**
+
+All endpoints accept API keys via:
+```bash
+# Header (recommended for web interface)
+curl -H "X-API-Key: your_key_here" http://localhost:8000/process
+
+# Environment variable (fallback for local development)
+export GOOGLE_API_KEY="your_key_here"
+```
+
+## 🔍 **Contract Types Supported**
 
 - **Securities Purchase Agreements** - Stock and warrant issuances
 - **License Agreements** - IP licensing with royalty terms
@@ -141,9 +167,46 @@ FINAL RESULTS
 - **Settlement Agreements** - Legal dispute resolutions
 - **Rights Agreements** - Investor and registration rights
 
-### **Graph Schema**
+## 🤖 **Enhanced AI Extraction**
 
+### **Hybrid Processing**
+- **AI Understanding**: Gemini 1.5 Flash for context comprehension
+- **Rule-Based Precision**: Regex patterns for financial data
+- **Smart Caching**: Avoid reprocessing with intelligent cache system
+
+### **Extracted Data Points**
+- Contract titles and types
+- Execution dates (multiple format support)
+- Party information and roles
+- Financial amounts and offerings
+- Securities details (types, quantities, prices)
+- Closing conditions and terms
+
+### **Example Extraction**
+```json
+{
+  "title": "Securities Purchase Agreement",
+  "contract_type": "Securities Purchase Agreement",
+  "execution_date": "2023-05-15",
+  "parties": [
+    {"name": "Abeona Therapeutics Inc.", "role": "Company"},
+    {"name": "Institutional Investor", "role": "Purchaser"}
+  ],
+  "total_offering_amount": 5000000.0,
+  "securities": [
+    {
+      "security_type": "Common Stock",
+      "quantity": 1000000,
+      "price_per_share": 5.0
+    }
+  ]
+}
 ```
+
+## 📊 **Graph Database Schema**
+
+```cypher
+// Core relationship patterns
 (Company:Party)-[:PARTY_TO]->(Contract:SecuritiesContract)
 (Investor:Party)-[:PARTY_TO]->(Contract:SecuritiesContract)
 (Contract)-[:ISSUES_SECURITY]->(Security:Security)
@@ -151,235 +214,203 @@ FINAL RESULTS
 (Contract)-[:HAS_REGISTRATION_RIGHTS]->(Rights:RegistrationRights)
 ```
 
-## 🎯 **Example Queries**
-
-The system can answer complex questions like:
-
-- *"What securities purchase agreements were executed in 2022?"*
-- *"Show me all license agreements with REGENXBIO"*
-- *"Find contracts with total offerings over $1 million"*
-- *"What types of securities has Abeona issued over time?"*
-- *"Which contracts include warrant issuances?"*
-- *"Show closing conditions across all agreements"*
-
-## 💾 **Smart Caching System**
-
-### **Automatic LLM Cost Optimization**
-
-```bash
-# First run: Processes all contracts with LLM
-python pipeline.py
-
-# Second run: Uses cached data, no LLM calls!
-python pipeline.py
-🏃‍♂️ 61 already processed (will use cache)
-🤖 0 new files (will use LLM processing)
-```
-
-### **Cache Management**
-
-- **Main Cache**: `processed_contracts_cache.json`
-- **Backups**: `processed_contracts_cache_backup_YYYYMMDD_HHMMSS.json`
-- **Smart Updates**: Only reprocesses if files were modified
-- **Continuous Saves**: Auto-saves every 5 contracts
-
-### **Force Reprocessing**
-
-```python
-from src.batch_ingest_contracts import EnhancedBatchProcessor
-processor = EnhancedBatchProcessor()
-
-# Reprocess everything with enhanced extraction
-processor.run_batch_processing(force_reprocess=True)
-```
-
-## 🔌 **Integration Options**
-
-### **Custom Contract Processing**
-
-```python
-from src.securities_pipeline_runner import SecuritiesGraphRAGPipeline
-
-pipeline = SecuritiesGraphRAGPipeline()
-
-# Process your contract
-contract_text = open("your_contract.html").read()
-contract_data = pipeline.ingest_contract(contract_text, "custom_id")
-```
-
-### **Direct Querying**
-
-```python
-# Natural language queries
-result = pipeline.query_contracts("Find all warrant agreements")
-print(result)
-```
-
-### **Advanced Analytics**
-
-```python
-# Database statistics
-stats = pipeline.get_database_stats()
-print(f"Total contracts: {stats['total_contracts']}")
-print(f"Securities issued: {stats['total_securities']}")
-```
-
-## 📈 **Database Management**
-
-### **Neo4j Browser Access**
-
-Visit: `http://localhost:7474`
-
-- Username: `neo4j`
-- Password: `graphrag_password`
-
-### **Sample Cypher Queries**
+### **Sample Queries**
 
 ```cypher
-// All securities contracts
+// All securities contracts from 2023
 MATCH (c:SecuritiesContract) 
-RETURN c.title, c.contract_type, c.execution_date 
+WHERE c.execution_date CONTAINS "2023"
+RETURN c.title, c.total_offering_amount 
 ORDER BY c.execution_date DESC
 
-// Securities by type
-MATCH (c:SecuritiesContract)-[:ISSUES_SECURITY]->(s:Security)
-RETURN s.security_type, count(*) as count
-ORDER BY count DESC
-
-// Parties and their roles
+// Top investors by contract count
 MATCH (p:Party)-[:PARTY_TO]->(c:SecuritiesContract)
-RETURN p.name, p.role, count(c) as contract_count
-ORDER BY contract_count DESC
-
-// Financial analysis
-MATCH (c:SecuritiesContract)
-WHERE c.total_offering_amount IS NOT NULL
-RETURN c.execution_date, c.total_offering_amount, c.title
-ORDER BY c.total_offering_amount DESC
-
-// License agreements with royalty info
-MATCH (c:SecuritiesContract)
-WHERE c.contract_type = "License Agreement"
-RETURN c.title, c.execution_date, c.summary
+WHERE p.role = "Purchaser"
+RETURN p.name, count(c) as contracts
+ORDER BY contracts DESC LIMIT 10
 ```
 
-## 🔧 **Troubleshooting**
+## 🚀 **Deployment Options**
 
-### **Common Issues**
-
-1. **Rate Limit Errors**
-   ```bash
-   # The system now uses gemini-1.5-flash with higher limits
-   # Cache prevents redundant API calls
-   ```
-
-2. **Neo4j Connection Error**
-   ```bash
-   # Check if Neo4j is running
-   docker ps | grep neo4j
-   
-   # Restart if needed
-   cd config && docker-compose restart
-   ```
-
-3. **API Key Issues**
-   ```bash
-   # Verify environment variable
-   echo $GOOGLE_API_KEY
-   
-   # Test API access
-   python -c "from langchain_google_genai import ChatGoogleGenerativeAI; print('API OK')"
-   ```
-
-### **Development Mode**
-
+### **Local Development**
 ```bash
-# Test enhanced extraction on sample contracts
-python -c "
-from src.securities_extraction import SecuritiesContractExtractor
-extractor = SecuritiesContractExtractor()
-# Test your extraction logic
-"
+# Backend
+cd backend && python api.py
 
-# Interactive mode with existing data
-python -c "
-from src.securities_pipeline_runner import SecuritiesGraphRAGPipeline
-pipeline = SecuritiesGraphRAGPipeline()
-result = pipeline.query_contracts('your query here')
-print(result)
-"
+# Frontend  
+cd frontend && npm run dev
+
+# Database
+cd config && docker-compose up -d
 ```
 
-## 🚀 **Advanced Features**
-
-### **Enhanced Extraction**
-
-- **Hybrid AI + Rule-Based**: Combines LLM understanding with precise regex patterns
-- **Smart Date Detection**: Multiple date format recognition
-- **Financial Term Extraction**: Aggregate purchase prices, per-share amounts
-- **Party Intelligence**: Entity types, jurisdictions, roles
-- **Securities Details**: Stock types, quantities, exercise prices
-- **Closing Conditions**: Automatic detection of common conditions
-
-### **Automatic Backups**
-
+### **Production Hosting**
 ```bash
-# Neo4j database backups
-ls neo4j_backups/
-neo4j_backup_20241226_133704.zip
-working_backup.zip
+# Backend (with gunicorn)
+pip install gunicorn
+gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.api:app
 
-# Processed contracts cache backups  
-ls processed_contracts_cache_backup_*.json
+# Frontend (build and serve)
+cd frontend
+npm run build
+npm start
+
+# Database (persistent volumes)
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### **Batch Reports**
+### **Environment Variables**
 
+#### **Backend (.env)**
 ```bash
-# Detailed processing reports
-ls *_batch_report_*.json
-abeona_batch_report_20241226_133709.json
+# Optional: Default API key for local development
+GOOGLE_API_KEY=your_default_key_here
+
+# Neo4j Configuration
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=graphrag_password
 ```
 
-## 📊 **Data Quality Improvements**
+#### **Frontend (.env.local)**
+```bash
+# API Base URL
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 
-### **Before Enhancements:**
-- ❌ Many "Basic extraction - full parsing failed" summaries
-- ❌ Null execution dates and financial amounts
-- ❌ Empty securities and conditions arrays
+# For production
+NEXT_PUBLIC_API_BASE_URL=https://your-api-domain.com
+```
 
-### **After Enhancements:**
-- ✅ Meaningful contract summaries with transaction details
-- ✅ Extracted execution dates from various formats  
-- ✅ Financial amounts detected (purchase prices, offerings)
-- ✅ Securities information (types, quantities, prices)
-- ✅ Closing conditions automatically identified
+## 🛡️ **Security & Privacy**
+
+### **API Key Handling**
+- ✅ **Client-side storage**: Keys stored in browser localStorage only
+- ✅ **No server persistence**: Never stored on backend servers
+- ✅ **Secure transmission**: HTTPS recommended for production
+- ✅ **Validation**: Real-time key testing before use
+- ✅ **Transparency**: Clear privacy messaging for users
+
+### **Data Protection**
+- Contract files processed in memory
+- Optional caching with user consent
+- Neo4j database isolated and configurable
+- WebSocket connections authenticated
+
+## 📈 **Performance Features**
+
+### **Smart Caching**
+- Avoid redundant LLM processing
+- Automatic backup creation
+- Incremental updates only
+- Cost optimization for hosted deployments
+
+### **Real-time Updates**
+- WebSocket connections for live progress
+- Non-blocking processing pipeline
+- Responsive UI during long operations
+- Auto-scroll chat interface
+
+### **Scalability**
+- Stateless API design
+- Containerized components
+- Horizontal scaling support
+- Database connection pooling
+
+## 🔧 **Development Guide**
+
+### **Adding New Contract Types**
+```python
+# 1. Update data models
+class NewContractType(BaseModel):
+    field1: str
+    field2: Optional[float]
+
+# 2. Add extraction logic
+def extract_new_contract_type(text: str) -> NewContractType:
+    # Implementation here
+    pass
+
+# 3. Update pipeline
+# Add to securities_extraction.py
+```
+
+### **Custom Frontend Components**
+```tsx
+// Create new component in frontend/app/components/
+import React from 'react'
+
+interface CustomComponentProps {
+  apiKey: string
+  onUpdate: (data: any) => void
+}
+
+export default function CustomComponent({ apiKey, onUpdate }: CustomComponentProps) {
+  // Implementation here
+}
+```
 
 ## 📁 **Project Structure**
 
 ```
 graphrag/
-├── data/ABEONA-THERAPEUTICS-INC/     # 61 contract files (1996-2023)
-├── src/                              # Core system modules
-├── config/                           # Docker and Neo4j configuration
-├── neo4j_backups/                    # Database backups
-├── reports/                          # Processing reports
-├── pipeline.py                       # Main execution script
-├── processed_contracts_cache.json    # Smart caching system
-└── IMPROVEMENTS_SUMMARY.md           # Detailed enhancement documentation
+├── frontend/                         # Next.js web interface
+│   ├── app/                         
+│   │   ├── components/              # React components
+│   │   │   ├── ApiKeySettings.tsx   # API key management
+│   │   │   ├── ChatInterface.tsx    # AI chat functionality
+│   │   │   ├── ContractUploader.tsx # File upload interface
+│   │   │   └── ...
+│   │   ├── page.tsx                 # Main application page
+│   │   └── layout.tsx               # App layout
+│   ├── package.json                 # Node.js dependencies
+│   └── ...
+├── backend/                         # FastAPI backend
+│   ├── api.py                       # Main API server
+│   ├── uploads/                     # Temporary file storage
+│   └── ...
+├── src/                             # Core processing pipeline
+│   ├── securities_extraction.py     # AI + rule-based extraction
+│   ├── neo4j_persistence.py        # Database operations
+│   ├── batch_ingest_contracts.py   # Batch processing
+│   └── ...
+├── config/                          # Docker configuration
+│   ├── docker-compose.yml          # Local development
+│   └── neo4j.conf                  # Database settings
+├── pipeline.py                      # CLI processing script
+└── README.md                        # This file
 ```
-
-## 📝 **License**
-
-MIT License - See LICENSE file for details.
 
 ## 🤝 **Contributing**
 
-1. Fork the repository
-2. Create a feature branch  
-3. Add tests for new contract types
-4. Submit a pull request
+1. **Fork** the repository
+2. **Create** feature branch (`git checkout -b feature/amazing-feature`)
+3. **Add** tests for new functionality
+4. **Update** documentation
+5. **Submit** pull request
+
+### **Development Setup**
+```bash
+# Backend
+cd backend
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
+
+# Frontend
+cd frontend
+npm install
+
+# Database
+cd config
+docker-compose up -d
+```
+
+## 📄 **License**
+
+MIT License - See LICENSE file for details.
 
 ---
 
-**Built with:** LangChain, LangGraph, Neo4j, Google Gemini AI, Pydantic, and intelligent caching for cost-effective securities contract analysis. 
+**🚀 Ready to analyze contracts?** Get your free [Gemini API key](https://makersuite.google.com/app/apikey) and start processing!
+
+**Built with:** Next.js, FastAPI, Neo4j, Google Gemini AI, TypeScript, Python, and modern web technologies for scalable contract analysis. 
