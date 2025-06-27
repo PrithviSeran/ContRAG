@@ -33,7 +33,12 @@ CACHE_FILE = "processed_contracts_cache.json"
 # CORS middleware for frontend integration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Next.js default port
+    allow_origins=[
+        "http://localhost:3000",  # Next.js default port for local development  
+        "https://contrag-graphrag.vercel.app",  # Your Vercel frontend URL
+        "wss://contrag-production.up.railway.app",  # Railway websocket URL
+        "https://contrag-production.up.railway.app"  # Railway API URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -148,6 +153,15 @@ def get_api_key_from_request(request: Request, x_api_key: Optional[str] = Header
 @app.get("/")
 async def root():
     return {"message": "GraphRAG Contract Processing API", "version": "1.0.0"}
+
+@app.get("/health")
+async def health_check():
+    """Simple health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "message": "API is running"
+    }
 
 class ApiKeyRequest(BaseModel):
     api_key: str
@@ -615,14 +629,29 @@ async def reset_system(request: Request, x_api_key: Optional[str] = Header(None)
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint for real-time updates"""
-    await manager.connect(websocket)
     try:
+        print(f"WebSocket connection attempt from: {websocket.client}")
+        await manager.connect(websocket)
+        print("WebSocket connection established successfully")
+        
+        # Send initial connection confirmation
+        await websocket.send_json({
+            "type": "connection", 
+            "message": "Connected to GraphRAG API",
+            "timestamp": datetime.now().isoformat()
+        })
+        
         while True:
             # Keep connection alive and listen for client messages
             data = await websocket.receive_text()
+            print(f"Received WebSocket message: {data}")
             # Echo back for connection testing
             await websocket.send_json({"type": "ping", "message": "pong"})
     except WebSocketDisconnect:
+        print("WebSocket disconnected")
+        manager.disconnect(websocket)
+    except Exception as e:
+        print(f"WebSocket error: {str(e)}")
         manager.disconnect(websocket)
 
 # Removed uvicorn.run() call - use uvicorn command directly for better WebSocket support

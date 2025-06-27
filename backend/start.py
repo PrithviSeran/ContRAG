@@ -40,14 +40,17 @@ def main():
             '--error-logfile', '-'
         ]
     else:
-        # Use uvicorn for development/simple deployment
+        # Use uvicorn for development/simple deployment with websocket support
         cmd = [
             'uvicorn',
             'api:app',
             '--host', host,
             '--port', str(port),
             '--access-log',
-            '--timeout-keep-alive', '300'
+            '--timeout-keep-alive', '300',
+            '--ws-ping-interval', '20',
+            '--ws-ping-timeout', '20',
+            '--loop', 'uvloop'
         ]
     
     print(f"Starting server on {host}:{port}")
