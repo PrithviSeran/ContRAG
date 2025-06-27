@@ -35,7 +35,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # Next.js default port for local development  
-        "https://contrag-graphrag.vercel.app",  # Your Vercel frontend URL
+        "https://cont-rag.vercel.app",  # Your Vercel frontend URL (corrected)
+        "https://contrag-graphrag.vercel.app",  # Alternative Vercel URL
         "https://contrag.onrender.com",  # Render API URL
         "wss://contrag.onrender.com"  # Render websocket URL
     ],
