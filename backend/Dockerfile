@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-# Force rebuild - timestamp: 2025-06-27-19:06
+# GraphRAG Backend Dockerfile for Render deployment
 # Set working directory
 WORKDIR /app
 
@@ -28,10 +28,9 @@ RUN mkdir -p uploads
 # Expose port (Railway will set PORT env var)
 EXPOSE 8000
 
-# Health check disabled for Railway debugging
-# HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-#     CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
+# Health check for Render
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
 
-# Use ultra-simple HTTP server for Railway testing - EXPLICIT OVERRIDE
-ENTRYPOINT ["python"]
-CMD ["simple_test.py"] 
+# Run the application using start.py which handles PORT environment variable
+CMD ["python", "start.py"] 
