@@ -477,12 +477,12 @@ async def chat_with_agent(request: Request, message: ChatRequest, x_api_key: Opt
         # Initialize securities agent if not already done
         if not state.securities_agent:
             await send_log_message("Initializing securities agent for chat...")
-            state.securities_agent = DirectSecuritiesAgent(CACHE_FILE)
+            state.securities_agent = DirectSecuritiesAgent()
         
         await send_log_message(f"Processing chat query: {message.message}")
         
         # Get response from the agent
-        response = state.securities_agent.query(message.message)
+        response = state.securities_agent.answer_question(message.message)
         
         await send_log_message("Chat response generated successfully")
         
