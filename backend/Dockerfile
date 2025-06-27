@@ -31,5 +31,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
 
-# Run the application using start.py which handles PORT environment variable
-CMD ["python", "start.py"] 
+# Run the test application for debugging
+CMD ["python", "test_start.py"] 
