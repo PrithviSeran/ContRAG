@@ -1,5 +1,6 @@
 FROM python:3.11-slim
 
+# Force rebuild - timestamp: 2025-06-27-19:06
 # Set working directory
 WORKDIR /app
 
@@ -31,5 +32,6 @@ EXPOSE 8000
 # HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 #     CMD curl -f http://localhost:${PORT:-8000}/ || exit 1
 
-# Use ultra-simple HTTP server for Railway testing
-CMD ["python", "simple_test.py"] 
+# Use ultra-simple HTTP server for Railway testing - EXPLICIT OVERRIDE
+ENTRYPOINT ["python"]
+CMD ["simple_test.py"] 

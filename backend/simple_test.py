@@ -13,9 +13,10 @@ class TestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/':
             response = {
-                "message": "Simple test server is working!",
+                "message": "🚀 SIMPLE TEST SERVER v2.0 DEPLOYED!",
                 "timestamp": datetime.now().isoformat(),
-                "port": os.environ.get("PORT", "unknown")
+                "port": os.environ.get("PORT", "unknown"),
+                "server_type": "Python HTTP Server (NOT UVICORN)"
             }
         elif self.path == '/health':
             response = {
