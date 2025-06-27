@@ -5,7 +5,7 @@ const nextConfig = {
     serverComponentsExternalPackages: [],
   },
   env: {
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000',
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com',
   },
   async rewrites() {
     // For production builds, we'll handle API routing differently
@@ -16,8 +16,8 @@ const nextConfig = {
       return [];
     }
     
-    // For development, proxy API calls to the local backend
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
+    // For development, proxy API calls to the Render backend
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com';
     
     return [
       {

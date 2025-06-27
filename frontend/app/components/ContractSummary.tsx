@@ -41,7 +41,7 @@ export default function ContractSummary() {
   const fetchContracts = async () => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/contracts/summary`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/contracts/summary`
       )
       setContractData(response.data)
     } catch (error: any) {
@@ -56,7 +56,7 @@ export default function ContractSummary() {
     setIsDownloading(true)
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/download/processed-data`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/download/processed-data`,
         { responseType: 'blob' }
       )
 
@@ -83,7 +83,7 @@ export default function ContractSummary() {
     setIsDownloading(true)
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/download/backup`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/download/backup`,
         { responseType: 'blob' }
       )
 

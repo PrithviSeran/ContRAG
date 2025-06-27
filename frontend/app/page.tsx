@@ -47,7 +47,9 @@ export default function Home() {
   // WebSocket connection for real-time updates
   useEffect(() => {
     const connectWebSocket = () => {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'
+
+      console.log('apiBaseUrl', apiBaseUrl)
       const wsUrl = apiBaseUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/ws'
       const websocket = new WebSocket(wsUrl)
       

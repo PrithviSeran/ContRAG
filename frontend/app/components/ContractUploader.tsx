@@ -82,7 +82,7 @@ export default function ContractUploader({ onUploadComplete, onProcessingStart, 
       // Step 1: Clear any existing files in upload directory
       try {
         await axios.delete(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/reset`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/reset`,
           {
             headers: {
               'X-API-Key': apiKey
@@ -100,7 +100,7 @@ export default function ContractUploader({ onUploadComplete, onProcessingStart, 
       })
 
       await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/upload`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/upload`,
         formData,
         {
           headers: {
@@ -119,7 +119,7 @@ export default function ContractUploader({ onUploadComplete, onProcessingStart, 
       onProcessingStart() // This will trigger the loading screen
 
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/process`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/process`,
         {},
         {
           headers: {
