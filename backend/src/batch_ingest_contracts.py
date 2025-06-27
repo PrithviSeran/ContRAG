@@ -10,7 +10,7 @@ import time
 import json
 from datetime import datetime
 from typing import List, Dict, Tuple
-from securities_pipeline_runner import SecuritiesGraphRAGPipeline, extract_text_from_html, extract_text_from_txt
+from .securities_pipeline_runner import SecuritiesGraphRAGPipeline, extract_text_from_html, extract_text_from_txt
 
 class EnhancedBatchProcessor:
     """Enhanced batch processor for all ABEONA contracts"""

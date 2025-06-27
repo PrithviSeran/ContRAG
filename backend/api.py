@@ -19,12 +19,11 @@ from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 import uuid
 
-# Add src directory to Python path
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+# Imports from src package
 
-from batch_ingest_contracts import EnhancedBatchProcessor
-from direct_securities_agent import DirectSecuritiesAgent
-from neo4j_persistence import backup_neo4j_data, restore_neo4j_data
+from src.batch_ingest_contracts import EnhancedBatchProcessor
+from src.direct_securities_agent import DirectSecuritiesAgent
+from src.neo4j_persistence import backup_neo4j_data, restore_neo4j_data
 
 app = FastAPI(title="GraphRAG Contract Processing API", version="1.0.0")
 
@@ -161,7 +160,7 @@ async def validate_api_key(request: ApiKeyRequest):
         os.environ["GOOGLE_API_KEY"] = request.api_key
         
         # Try to initialize the pipeline to test the API key
-        from securities_pipeline_runner import SecuritiesGraphRAGPipeline
+        from src.securities_pipeline_runner import SecuritiesGraphRAGPipeline
         
         # Create a minimal test instance
         pipeline = SecuritiesGraphRAGPipeline()

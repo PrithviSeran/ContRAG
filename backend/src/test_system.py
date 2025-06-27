@@ -4,7 +4,7 @@ Test script to validate the GraphRAG system components
 """
 
 import os
-from securities_pipeline_runner import SecuritiesGraphRAGPipeline, extract_text_from_html, extract_text_from_txt
+from .securities_pipeline_runner import SecuritiesGraphRAGPipeline, extract_text_from_html, extract_text_from_txt
 
 def test_text_extraction():
     """Test text extraction from sample files"""

@@ -10,7 +10,7 @@ from neo4j import GraphDatabase
 import json
 import re
 
-from securities_data_models import (
+from .securities_data_models import (
     SecuritiesContract, Party, Security, ClosingConditions, 
     RegistrationRights, ResaleRestrictions, Representation,
     SecurityType, PartyRole, RegistrationStatus

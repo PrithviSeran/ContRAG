@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy backend source code (includes src directory)
 COPY . .
 
-# Add src directory to Python path
-ENV PYTHONPATH="/app/src:${PYTHONPATH}"
+# Add current directory and src directory to Python path
+ENV PYTHONPATH="/app:/app/src:${PYTHONPATH}"
 
 # Create uploads directory
 RUN mkdir -p uploads

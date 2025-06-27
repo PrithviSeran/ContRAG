@@ -15,8 +15,8 @@ from neo4j import GraphDatabase
 from bs4 import BeautifulSoup
 import json
 
-from securities_data_models import SecuritiesContract
-from securities_extraction import SecuritiesContractExtractor, import_securities_contract_to_neo4j
+from .securities_data_models import SecuritiesContract
+from .securities_extraction import SecuritiesContractExtractor, import_securities_contract_to_neo4j
 
 class SecuritiesGraphRAGPipeline:
     """Complete pipeline for ingesting and querying securities contracts"""
