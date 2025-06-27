@@ -15,11 +15,8 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy backend source code
+# Copy backend source code (includes src directory)
 COPY . .
-
-# Copy src directory from parent directory (contains required modules)
-COPY ../src ./src
 
 # Add src directory to Python path
 ENV PYTHONPATH="/app/src:${PYTHONPATH}"
