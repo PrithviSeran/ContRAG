@@ -1,6 +1,6 @@
 {
   "env": {
-    "NEXT_PUBLIC_API_BASE_URL": "@api_base_url"
+    "NEXT_PUBLIC_API_BASE_URL": "https://contrag-production.up.railway.app"
   },
   "functions": {
     "app/**/*.js": {
