@@ -59,7 +59,7 @@ export default function ChatInterface({ apiKey }: ChatInterfaceProps) {
 
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/chat`,
+        'https://contrag.onrender.com/chat',
         { message: userMessage.content },
         {
           headers: {

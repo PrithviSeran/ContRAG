@@ -48,7 +48,7 @@ export default function ApiKeySettings({ onApiKeyChange }: ApiKeySettingsProps) 
     try {
       // Test the API key by making a simple request to the backend
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'https://contrag.onrender.com'}/validate-api-key`,
+        'https://contrag.onrender.com/validate-api-key',
         {
           method: 'POST',
           headers: {

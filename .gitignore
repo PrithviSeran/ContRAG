@@ -3,3 +3,4 @@
 /neo4j_backups
 /frontend/node_modules
 /backend/venv
+/frontend/.next
