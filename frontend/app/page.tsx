@@ -42,14 +42,79 @@ export default function Home() {
   const [logs, setLogs] = useState<LogMessage[]>([])
   const [ws, setWs] = useState<WebSocket | null>(null)
   const [isConnected, setIsConnected] = useState(false)
+  const [isServerStarting, setIsServerStarting] = useState(true)
+  const [serverConnectionAttempts, setServerConnectionAttempts] = useState(0)
   const [apiKey, setApiKey] = useState('')
+
+  // Server health check function
+  const checkServerHealth = async () => {
+    try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+      
+      const response = await fetch('https://contrag.onrender.com/health', {
+        method: 'GET',
+        signal: controller.signal,
+      })
+      
+      clearTimeout(timeoutId)
+      
+      if (response.ok) {
+        setIsServerStarting(false)
+        return true
+      }
+      return false
+    } catch (error) {
+      console.log('Server health check failed:', error)
+      return false
+    }
+  }
+
+  // Initial server connection check
+  useEffect(() => {
+    const initialServerCheck = async () => {
+      console.log('Checking server availability...')
+      
+      const isHealthy = await checkServerHealth()
+      
+      if (!isHealthy) {
+        // Server not ready, start polling
+        const checkInterval = setInterval(async () => {
+          setServerConnectionAttempts(prev => prev + 1)
+          const healthy = await checkServerHealth()
+          
+          if (healthy) {
+            clearInterval(checkInterval)
+            setIsServerStarting(false)
+            console.log('Server is now available!')
+          }
+        }, 5000) // Check every 5 seconds
+
+        // Timeout after 3 minutes
+        setTimeout(() => {
+          clearInterval(checkInterval)
+          if (isServerStarting) {
+            setIsServerStarting(false)
+            console.warn('Server health check timeout - proceeding anyway')
+          }
+        }, 180000) // 3 minutes
+
+        return () => clearInterval(checkInterval)
+      }
+    }
+
+    initialServerCheck()
+  }, [])
 
   // WebSocket connection for real-time updates
   useEffect(() => {
+    // Don't try to connect WebSocket until server is available
+    if (isServerStarting) return
+
     const connectWebSocket = () => {
       const apiBaseUrl = 'https://contrag.onrender.com'
 
-      console.log('apiBaseUrl', apiBaseUrl)
+      console.log('Connecting to WebSocket:', apiBaseUrl)
       const wsUrl = apiBaseUrl.replace('https://', 'wss://').replace('http://', 'ws://') + '/ws'
       const websocket = new WebSocket(wsUrl)
       
@@ -74,8 +139,10 @@ export default function Home() {
         setIsConnected(false)
         setWs(null)
         
-        // Attempt to reconnect after 3 seconds
-        setTimeout(connectWebSocket, 3000)
+        // Attempt to reconnect after 3 seconds (only if server is not starting)
+        if (!isServerStarting) {
+          setTimeout(connectWebSocket, 3000)
+        }
       }
       
       websocket.onerror = (error) => {
@@ -91,7 +158,7 @@ export default function Home() {
         ws.close()
       }
     }
-  }, [])
+  }, [isServerStarting])
 
   // Load API key from localStorage on page load
   useEffect(() => {
@@ -109,6 +176,45 @@ export default function Home() {
   const showProcessing = processingStatus.status === 'processing'
   const showResults = processingStatus.status === 'completed'
   const showApiKeySettings = processingStatus.status === 'idle' && !apiKey
+
+  // Show server connection loading screen
+  if (isServerStarting) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        <Header isConnected={false} />
+        
+        <main className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-center min-h-[500px]">
+            <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+              <div className="mb-6">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Connecting to Server</h2>
+                <p className="text-gray-600 mb-4">
+                  Please wait while we establish connection to the backend server.
+                </p>
+              </div>
+              
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-blue-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="text-sm text-blue-800 text-left">
+                    <p className="font-medium mb-1">First-time connection may take 2-3 minutes</p>
+                    <p>Our server is hosted on Render and may need a moment to start up if it hasn't been used recently. Thank you for your patience!</p>
+                  </div>
+                </div>
+              </div>
+              
+              
+            </div>
+          </div>
+        </main>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
