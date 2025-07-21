@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from typing import List, Optional
-from langchain_google_genai import ChatGoogleGenerativeAI
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import BaseTool
@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field
 from neo4j import GraphDatabase
 import json
 import re
+import torch
 
 from license_data_models import (
     LicenseContract, Party, LicensedPatent, LicensedProduct, LicensedTerritory,
@@ -17,20 +18,42 @@ from license_data_models import (
 )
 
 class LicenseContractExtractor:
-    """Extract structured data from license agreements"""
+    """Extract structured data from license agreements using Llama 3.3 70B"""
     
-    def __init__(self):
-        # Initialize Google API key
-        google_api_key = os.getenv("GOOGLE_API_KEY")
-        if not google_api_key:
-            raise ValueError("GOOGLE_API_KEY environment variable not set")
+    def __init__(self, model_path: str = None):
+        """
+        Initialize the Llama-based extractor
         
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-001",
-            temperature=0.1,
-            max_tokens=8192,
-            google_api_key=google_api_key
+        Args:
+            model_path: Path to the Llama 3.3 70B model directory
+        """
+        if not model_path:
+            model_path = os.getenv("LLAMA_MODEL_PATH", "/path/to/llama-3.3-70b")
+        
+        if not os.path.exists(model_path):
+            raise ValueError(f"Llama model not found at: {model_path}")
+        
+        # Initialize Llama model and tokenizer
+        print(f"Loading Llama model from: {model_path}")
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            torch_dtype=torch.float16,
+            device_map="auto",
+            trust_remote_code=True
         )
+        
+        # Create pipeline with your specified parameters
+        self.pipe = pipeline(
+            "text-generation",
+            model=self.model,
+            tokenizer=self.tokenizer,
+            max_length=4096,
+            do_sample=True,
+            temperature=0.7,
+            pad_token_id=self.tokenizer.eos_token_id
+        )
+        
         self.parser = PydanticOutputParser(pydantic_object=LicenseContract)
     
     def extract_contract_data(self, contract_text: str) -> LicenseContract:
@@ -108,11 +131,17 @@ class LicenseContractExtractor:
             partial_variables={"format_instructions": self.parser.get_format_instructions()}
         )
         
-        prompt = prompt_template.format(contract_text=contract_text[:15000])
+        prompt = prompt_template.format(contract_text=contract_text[:12000])  # Slightly shorter for Llama
         
         try:
-            response = self.llm.invoke(prompt)
-            result = self.parser.parse(response.content)
+            # Generate response using Llama pipeline
+            response = self.pipe(prompt)
+            generated_text = response[0]['generated_text']
+            
+            # Extract the response part (remove the input prompt)
+            response_content = generated_text[len(prompt):].strip()
+            
+            result = self.parser.parse(response_content)
             
             # Enhance with rule-based data
             if not result.execution_date and license_data.get('execution_date'):
