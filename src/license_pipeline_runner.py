@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-License GraphRAG Pipeline Runner
-Comprehensive system for processing license contracts into knowledge graphs
-"""
-
 import os
 import re
 from datetime import datetime
@@ -159,36 +153,4 @@ class LicenseGraphRAGPipeline:
         nx.write_gpickle(self.graph, path)
 
     def load_graph(self, path: str):
-        self.graph = nx.read_gpickle(path)
-
-def extract_text_from_html(file_path: str) -> str:
-    """Extract text content from HTML file"""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            soup = BeautifulSoup(file.read(), 'html.parser')
-            
-            # Remove script and style elements
-            for script in soup(["script", "style"]):
-                script.decompose()
-            
-            # Get text content
-            text = soup.get_text()
-            
-            # Clean up whitespace
-            lines = (line.strip() for line in text.splitlines())
-            chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-            text = ' '.join(chunk for chunk in chunks if chunk)
-            
-            return text
-    except Exception as e:
-        print(f"Error extracting text from HTML file {file_path}: {e}")
-        return ""
-
-def extract_text_from_txt(file_path: str) -> str:
-    """Extract text content from TXT file"""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-    except Exception as e:
-        print(f"Error extracting text from TXT file {file_path}: {e}")
-        return "" 
+        self.graph = nx.read_gpickle(path) 
